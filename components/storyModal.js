@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image, Dimensions } from 'react-native';
+import { Video } from "expo";
 import Animated from 'react-native-reanimated';
 import { PanGestureHandler, State } from "react-native-gesture-handler";
+
 
 const { width: wWidth, height: wHeight } = Dimensions.get("window");
 
@@ -22,9 +24,11 @@ const {
     Clock,
     event,
     block,
+    interpolate,
     lessOrEq,
     greaterThan,
-    and
+    and,
+    call,
 } = Animated
 
 function runSpring(value, dest) {
@@ -82,7 +86,7 @@ export default class StoryModal extends Component {
     }
     render() {
         const { translateX, translateY, width, height, onGestureEvent } = this;
-        const { story } = this.props;
+        const { story, onRequestClose } = this.props;
         const style = {
             ...StyleSheet.absoluteFillObject,
             width,
@@ -111,8 +115,17 @@ export default class StoryModal extends Component {
                                 runSpring(translateX, this.props.position.x),
                                 runSpring(translateY, this.props.position.y),
                                 runSpring(width, this.props.position.width),
-                                runSpring(height,this.props.position.height),
+                                runSpring(height, this.props.position.height),
+                                cond(eq(height, this.props.position.height), call([], onRequestClose))
                             ])),
+                            cond(eq(this.state, State.ACTIVE), set(this.height, interpolate(this.translateY, {
+                                inputRange: [0, wHeight],
+                                outputRange: [wHeight, this.props.position.height],
+                            }))),
+                            cond(eq(this.state, State.ACTIVE), set(this.width, interpolate(this.translateY, {
+                                inputRange: [0, wHeight],
+                                outputRange: [wWidth, this.props.position.width],
+                            }))),
                         ])
                     }
                 </Animated.Code>
@@ -122,7 +135,25 @@ export default class StoryModal extends Component {
                     {...{ onGestureEvent }}
                 >
                     <Animated.View {...{ style }}>
-                        <Image source={story.source} style={styles.image} />
+                    {
+                        !story.video && (
+                          <Image source={story.source} style={styles.image} />
+                        )
+                      }
+                      {
+                        story.video && (
+                          <Video
+                            source={story.video}
+                            rate={1.0}
+                            volume={1.0}
+                            isMuted={false}
+                            resizeMode="cover"
+                            shouldPlay
+                            isLooping
+                            style={styles.video}
+                          />
+                        )
+                      }
                     </Animated.View>
                 </PanGestureHandler>
             </View>
@@ -139,6 +170,10 @@ const styles = StyleSheet.create({
         width: null,
         height: null,
         borderRadius: 5
-    }
+    },
+    video: {
+        ...StyleSheet.absoluteFill,
+        borderRadius: 5,
+      },
 });
 

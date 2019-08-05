@@ -12,7 +12,8 @@ export default class Discovery extends Component {
        this.thumbnails = props.stories.map( () => React.createRef());
         this.state = {
             selectedStory : null,
-            position : null 
+            position : null , 
+            story : null
         }
       }
     

@@ -15,13 +15,14 @@ export default class StoryThumbnail extends Component {
     );
 
     render() {
-        const { story, selected} = this.props;
+        const {thumbnail} = this
+        const { story, onPress, selected} = this.props;
         if(selected) {
             return <View style={styles.image}/>
         }else{
             return (
-                <TouchableWithoutFeedback onPress={this.props.onPress}>
-                    <Image source={story.source} style={styles.image} ref={this.thumbnail} />
+                <TouchableWithoutFeedback {...{onPress}}>
+                    <Image source={story.source} style={styles.image} ref={thumbnail} />
                 </TouchableWithoutFeedback>
             );
         }

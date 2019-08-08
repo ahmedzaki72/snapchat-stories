@@ -13,7 +13,6 @@ export default class Discovery extends Component {
         this.state = {
             selectedStory : null,
             position : null , 
-            story : null
         }
       }
     

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image, Dimensions } from 'react-native';
-import { Video } from "expo";
+import { Video } from 'expo';
 import Animated from 'react-native-reanimated';
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 
@@ -87,6 +87,9 @@ export default class StoryModal extends Component {
     render() {
         const { translateX, translateY, width, height, onGestureEvent } = this;
         const { story, onRequestClose } = this.props;
+        console.log(story);
+        console.log(story.video);
+        console.log(story.source);
         const style = {
             ...StyleSheet.absoluteFillObject,
             width,
@@ -135,15 +138,10 @@ export default class StoryModal extends Component {
                     {...{ onGestureEvent }}
                 >
                     <Animated.View {...{ style }}>
-                    {
-                        !story.video && (
-                          <Image source={story.source} style={styles.image} />
-                        )
-                      }
                       {
                         story.video && (
                           <Video
-                            source={story.video}
+                            source={console.log(story.video)}
                             rate={1.0}
                             volume={1.0}
                             isMuted={false}
@@ -152,6 +150,11 @@ export default class StoryModal extends Component {
                             isLooping
                             style={styles.video}
                           />
+                        )
+                      }
+                      {
+                        !story.video && (
+                          <Image source={story.source} style={styles.image} />
                         )
                       }
                     </Animated.View>

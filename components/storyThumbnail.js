@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, Dimensions, View, Image, TouchableWithoutFeedback } from 'react-native';
-
+import { StyleSheet, Dimensions, View, Image, TouchableWithoutFeedback, Platform } from 'react-native';
+import Constants from 'expo-constants';
 
 const width = Dimensions.get("window").width / 2 - 16 * 2;
 const height = width * 1.77;
+const offset = (v) => (Platform.OS === "android" ? (v + Constants.statusBarHeight) : v);
 
 
 export default class StoryThumbnail extends Component {
  
     thumbnail = React.createRef();
 
-    measure = (): Position => new Promise(
-        resolve => this.thumbnail.current.measureInWindow( (x, y, width, height) => resolve ({x, y, width, height}))
+    measure =async (): Position => new Promise(
+        resolve => this.thumbnail.current.measureInWindow( (x, y, width, height) => resolve ({x, y :  offset(y), width, height}))
     );
 
     render() {
